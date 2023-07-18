@@ -1,1 +1,4 @@
 Django==3.2.16
+Pillow==9.3.0
+djangorestframework==3.14.0
+djoser==2.1.0
