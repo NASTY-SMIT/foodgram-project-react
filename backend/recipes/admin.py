@@ -13,6 +13,7 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(models.Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'measurement_unit')
+    list_editable = ('name', 'measurement_unit')
     list_filter = ('name', )
     search_fields = ('name', )
 
@@ -23,7 +24,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     'text', 'image',)
     list_editable = (
         'author', 'name', 'cooking_time', 'text', 'image')
-    list_filter = ('name',)
+    list_filter = ('name', 'author', 'tags',)
     empty_value_display = '-пусто-'
 
 
