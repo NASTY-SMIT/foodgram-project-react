@@ -82,8 +82,7 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
-        default=0,
-        )
+        default=0,)
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now_add=True,
@@ -133,8 +132,7 @@ class IngredientRecipe(models.Model):
         verbose_name = 'Количетсво ингредиента в рецепте'
         constraints = [
             models.UniqueConstraint(fields=('recipe', 'ingredient',),
-                                    name='Unique Ingredients')
-            ]
+                                    name='Unique Ingredients')]
 
     def __str__(self) -> str:
         return f'{self.amount} {self.ingredient}'
