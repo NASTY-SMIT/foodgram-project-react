@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+from dotenv import load_dotenv
 from pathlib import Path
 import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=8h*nvj2_uk=5v2he=p&4*vcpkvh3ile9*qxj+^!8q#r4-$6i@'
+SECRET_KEY = os.getenv('SECRET_KEY', default=True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.getenv('DEBUG', 'True') == 'True')
 
 ALLOWED_HOSTS = []
 
@@ -39,9 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
+    'corsheaders',
     'djoser',
     'users',
     'recipes',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -104,19 +110,30 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1']
+
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': [
+        'api.pagination.CustomPaginator',
+    ],
+    'PAGE_SIZE': 6,
 }
 
 
 DJOSER = {
     "LOGIN_FIELD": "email",
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.UserCreateSerializer',  # сериализатор для создания пользователя
-        'user': 'api.serializers.UserSerializer',  # сериализатор для получения данных пользователя
-        'current_user': 'api.serializers.CurrentUserSerializer',  # сериализатор для получения текущего пользователя
+    "HIDE_USERS": False,
+    "SERIALIZERS": {
+        "user": "api.serializers.SignUpSerializer",
+        "user_list": "api.serializers.ShowUserSerializer",
+        "current_user": "api.serializers.ShowUserSerializer",
+        "user_create": "api.serializers.SignUpSerializer",
     },
 }
 
@@ -126,13 +143,13 @@ DJOSER = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE', 'UTC')
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = os.getenv('USE_TZ', True)
 
 
 # Static files (CSS, JavaScript, Images)

@@ -67,7 +67,7 @@ class Recipe(models.Model):
         verbose_name='Название')
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to='recipe_images/',
+        upload_to='recipes/images/',
     )
     text = models.TextField(verbose_name='Описание')
     ingredients = models.ManyToManyField(
@@ -117,10 +117,12 @@ class IngredientRecipe(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиенты в рецепте',
+        related_name='ingredients',
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name='Рецепт с ингридиентами',
+        related_name='recipes',
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество ингредиентов',
@@ -167,7 +169,7 @@ class Favorite(models.Model):
 class ShoppingCart(models.Model):
     recipe = models.ForeignKey(
         Recipe,
-        related_name='shopping_cart',
+        related_name='shopping_cart_recipe',
         on_delete=models.CASCADE,
         verbose_name='Рецепт в списке покупок',
     )
@@ -175,7 +177,7 @@ class ShoppingCart(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='shopping_cart',
+        related_name='shopping_cart_user',
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата добавления',

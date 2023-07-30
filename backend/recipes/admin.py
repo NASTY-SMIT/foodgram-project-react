@@ -20,17 +20,11 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'author', 'name', 'cooking_time',
-                    'text', 'image', 'in_favorite')
+                    'text', 'image',)
     list_editable = (
-        'author', 'name', 'cooking_time', 'text', 'image'
-    )
-    readonly_fields = ('in_favorite',)
+        'author', 'name', 'cooking_time', 'text', 'image')
     list_filter = ('name',)
     empty_value_display = '-пусто-'
-
-    @admin.display(description='В избранном')
-    def in_favorite(self, obj):
-        return obj.favorite_recipe.count()
 
 
 @admin.register(models.Favorite)

@@ -2,12 +2,22 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import validate_email
 from django.db import models
-from .managers import UserManager
 
 
 class User(AbstractUser):
+
+    email = models.EmailField(
+        verbose_name='Почта',
+        max_length=254,
+        unique=True,
+        help_text='Required. 254 characters or fewer.',
+        validators=[validate_email],
+        error_messages={
+            'unique': "A user with that email already exists.",
+        },
+    )
     username = models.CharField(
-        verbose_name="username",
+        verbose_name='Юзернейм',
         max_length=150,
         unique=True,
         help_text=('Required. 150 characters or fewer. Letters, '
@@ -17,30 +27,25 @@ class User(AbstractUser):
             'unique': "A user with that username already exists.",
         },
     )
-    password = models.CharField(verbose_name="Пароль",  max_length=150)
-    email = models.CharField(
-        max_length=254,
-        unique=True,
-        help_text='Required. 254 characters or fewer.',
-        validators=[validate_email],
-        error_messages={
-            'unique': "A user with that email already exists.",
-        },
+    first_name = models.CharField(
+        verbose_name='Имя',
+        max_length=150,
     )
-    first_name = models.CharField(verbose_name="Имя",
-                                  max_length=150, blank=True)
-    last_name = models.CharField(verbose_name="Фамилия",
-                                 max_length=150, blank=True)
-    superuser = models.BooleanField('Админ', default=False)
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-    objects = UserManager()
+    last_name = models.CharField(
+        verbose_name='Фамилия',
+        max_length=150,
+    )
+    password = models.CharField(
+        verbose_name='Пароль',
+        max_length=128,
+    )
 
     class Meta:
-        verbose_name = "Пользователь"
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
         ordering = ("username",)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.username
 
 
