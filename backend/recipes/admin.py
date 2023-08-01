@@ -21,11 +21,17 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'author', 'name', 'cooking_time',
-                    'text', 'image',)
+                    'text', 'image', 'get_ingredients')
     list_editable = (
         'author', 'name', 'cooking_time', 'text', 'image')
     list_filter = ('name', 'author', 'tags',)
     empty_value_display = '-пусто-'
+
+    def get_ingredients(self, obj):
+        return ", ".join(
+            [ingredient.name for ingredient in obj.ingredients.all()])
+
+    get_ingredients.short_description = 'Ингредиенты'
 
 
 @admin.register(models.Favorite)

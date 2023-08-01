@@ -1,23 +1,29 @@
 import base64
-
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer, UserSerializer
-from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from django.core import exceptions as django_exceptions
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .mixins import UsernameValidationMixin
+
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from recipes.models import (Recipe, Ingredient, Tag,
                             IngredientRecipe, Favorite,
                             ShoppingCart)
-from users.models import Follow, User
+from users.models import Follow
+
+from .mixins import UsernameValidationMixin
+from .constants import MAX_LENGTH_EMAIL, MAX_LENGTH_USERNAME
+
+
+User = get_user_model()
 
 
 class SignUpSerializer(UserCreateSerializer, UsernameValidationMixin):
     '''Регистрация пользователя'''
-    email = serializers.EmailField(max_length=254,
+    email = serializers.EmailField(max_length=MAX_LENGTH_EMAIL,
                                    validators=[validate_email])
-    username = serializers.CharField(max_length=150)
+    username = serializers.CharField(max_length=MAX_LENGTH_USERNAME)
 
     class Meta:
         model = User
@@ -124,7 +130,6 @@ class UserSubscribeSerializer(ShowUserSerializer):
         return False
 
     def get_recipes_count(self, obj: User) -> int:
-
         return obj.recipes.count()
 
 
@@ -253,13 +258,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data, author=author)
         recipe.tags.add(*tags)
+        ingredient_recipe_list = []
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             amount = ingredient['amount']
-            IngredientRecipe.objects.create(
-                ingredient=ingredient_id, recipe=recipe, amount=amount
+            ingredient_recipe_list.append(
+                IngredientRecipe(ingredient=ingredient_id,
+                                 recipe=recipe, amount=amount)
             )
-
+        IngredientRecipe.objects.bulk_create(ingredient_recipe_list)
         return recipe
 
     def perform_create(self, serializer):
@@ -271,12 +278,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         instance.tags.add(*tags)
         IngredientRecipe.objects.filter(recipe=instance).delete()
+        ingredient_recipe_list = []
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             amount = ingredient['amount']
-            IngredientRecipe.objects.create(
-                ingredient=ingredient_id, recipe=instance, amount=amount
+            ingredient_recipe_list.append(
+                IngredientRecipe(ingredient=ingredient_id,
+                                 recipe=instance, amount=amount)
             )
+        IngredientRecipe.objects.bulk_create(ingredient_recipe_list)
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()

@@ -1,40 +1,33 @@
+from django.contrib.auth import get_user_model
 from django.db import models
-from users.models import User
+from api.constants import COLORS, MAX_LENGTH_NAME, MAX_LENGTH_COLOR
+
+
+User = get_user_model()
 
 
 class Tag(models.Model):
 
-    PINK = '#F08080'
-    ORANGE = '#FF8C00'
-    BLUE = '#7FFFD4'
-    YELLOW = '#FFFF00'
-
-    COLORS = [
-        (PINK, 'Розовый'),
-        (ORANGE, 'Оранжевый'),
-        (BLUE, 'Синий'),
-        (YELLOW, 'Жёлтый'),
-    ]
-
     name = models.CharField(
-        max_length=200,
+        max_length=MAX_LENGTH_NAME,
         unique=True,
         verbose_name='Название тега',
     )
     color = models.CharField(
-        max_length=7,
+        max_length=MAX_LENGTH_COLOR,
         choices=COLORS,
         unique=True,
         verbose_name='Цвет',
     )
     slug = models.SlugField(
-        max_length=200,
+        max_length=MAX_LENGTH_NAME,
         unique=True,
         verbose_name='Слаг')
 
     class Meta:
         ordering = ["name"]
         verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
@@ -42,14 +35,15 @@ class Tag(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(
-        verbose_name='Название', max_length=200
+        verbose_name='Название', max_length=MAX_LENGTH_NAME
     )
     measurement_unit = models.CharField(
-        verbose_name='Единица измерения', max_length=200
+        verbose_name='Единица измерения', max_length=MAX_LENGTH_NAME
     )
 
     class Meta:
-        verbose_name = 'Ингредиенты'
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
@@ -63,7 +57,7 @@ class Recipe(models.Model):
         verbose_name='Автор',
     )
     name = models.CharField(
-        max_length=200,
+        max_length=MAX_LENGTH_NAME,
         verbose_name='Название')
     image = models.ImageField(
         verbose_name='Картинка',
@@ -92,6 +86,7 @@ class Recipe(models.Model):
     class Meta:
         ordering = ["-pub_date"]
         verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.name
@@ -108,7 +103,8 @@ class TagsRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Теги в рецепте'
+        verbose_name = 'Тег в рецепте'
+        verbose_name_plural = 'Теги в рецепте'
 
 
 class IngredientRecipe(models.Model):
@@ -130,6 +126,7 @@ class IngredientRecipe(models.Model):
 
     class Meta:
         verbose_name = 'Количетсво ингредиента в рецепте'
+        verbose_name_plural = 'Количетсво ингредиента в рецепте'
         constraints = [
             models.UniqueConstraint(fields=('recipe', 'ingredient',),
                                     name='Unique Ingredients')]
@@ -159,6 +156,7 @@ class Favorite(models.Model):
     class Meta:
         ordering = ["-pub_date"]
         verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
 
     def __str__(self):
         return f'{self.user} favorite {self.recipe}'
@@ -185,6 +183,7 @@ class ShoppingCart(models.Model):
     class Meta:
         ordering = ["-pub_date"]
         verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
         constraints = (
             models.UniqueConstraint(
                 fields=(
