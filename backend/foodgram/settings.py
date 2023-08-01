@@ -7,11 +7,11 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv('SECRET_KEY', default=True)
+SECRET_KEY = os.getenv('SECRET_KEY', 'default')
 
 DEBUG = (os.getenv('DEBUG', 'True') == 'True')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 INSTALLED_APPS = [
@@ -121,7 +121,9 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = os.getenv('USE_TZ', True)
+USE_TZ = (os.getenv('USE_TZ', 'True') == 'True')
+
+IMAGE_UPLOAD_PATH = 'recipes/images/'
 
 
 STATIC_URL = '/static/'

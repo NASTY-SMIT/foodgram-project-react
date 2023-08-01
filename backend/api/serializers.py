@@ -1,17 +1,19 @@
 import base64
+
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.validators import validate_email
 from django.core import exceptions as django_exceptions
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import (Recipe, Ingredient, Tag,
-                            IngredientRecipe, Favorite,
-                            ShoppingCart)
-from users.models import Follow
 
+from recipes.models import (
+    Recipe, Ingredient, Tag,
+    IngredientRecipe, Favorite,
+    ShoppingCart
+)
+from users.models import Follow
 from .mixins import UsernameValidationMixin
 from .constants import MAX_LENGTH_EMAIL, MAX_LENGTH_USERNAME
 
@@ -239,18 +241,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         fields = ['id', 'ingredients', 'tags', 'image', 'name',
                   'text', 'author', 'cooking_time', ]
 
-    def validate(self, data):
-        required_fields = ['ingredients', 'tags', 'image',
-                           'name', 'text', 'cooking_time']
-        missing_fields = [field for field in required_fields
-                          if not data.get(field)]
-        if missing_fields:
-            raise serializers.ValidationError(
-                f'Пожалуйста, заполните {", ".join(missing_fields)}')
-        if data.get('cooking_time') and data['cooking_time'] <= 0:
+    def validate_cooking_time(self, value):
+        if value <= 0:
             raise serializers.ValidationError(
                 {'error': 'Время приготовления не может быть < 1 минуты'})
-        return data
+        return value
 
     def create(self, validated_data):
         author = self.context.get('request').user

@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.conf import settings
+
 from api.constants import COLORS, MAX_LENGTH_NAME, MAX_LENGTH_COLOR
 
 
@@ -61,7 +63,7 @@ class Recipe(models.Model):
         verbose_name='Название')
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to='recipes/images/',
+        upload_to=settings.IMAGE_UPLOAD_PATH,
     )
     text = models.TextField(verbose_name='Описание')
     ingredients = models.ManyToManyField(
@@ -125,8 +127,8 @@ class IngredientRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Количетсво ингредиента в рецепте'
-        verbose_name_plural = 'Количетсво ингредиента в рецепте'
+        verbose_name = 'Количетсво ингредиентов в рецепте'
+        verbose_name_plural = 'Количетсво ингредиентов в рецепте'
         constraints = [
             models.UniqueConstraint(fields=('recipe', 'ingredient',),
                                     name='Unique Ingredients')]

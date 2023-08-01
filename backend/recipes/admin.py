@@ -14,7 +14,7 @@ class TagAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'measurement_unit')
     list_editable = ('name', 'measurement_unit')
-    list_filter = ('name', )
+    list_filter = ('measurement_unit', )
     search_fields = ('name', )
 
 
@@ -24,7 +24,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     'text', 'image', 'get_ingredients')
     list_editable = (
         'author', 'name', 'cooking_time', 'text', 'image')
-    list_filter = ('name', 'author', 'tags',)
+    list_filter = ('tags',)
     empty_value_display = '-пусто-'
 
     def get_ingredients(self, obj):

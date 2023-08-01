@@ -24,3 +24,6 @@ class Follow(models.Model):
                 name='check_not_self_follow'
             ),
         ]
+
+    def __str__(self) -> str:
+        return f'{self.user} {self.author}'

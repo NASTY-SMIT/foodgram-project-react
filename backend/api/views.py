@@ -6,6 +6,8 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from django.contrib.auth import get_user_model
+from djoser.views import UserViewSet
 
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
@@ -18,9 +20,6 @@ from .serializers import (CreateRecipeSerializer, IngredientSerializer,
                           ShowUserSerializer, SignUpSerializer,
                           SubscribeAuthorSerializer, TagSerializer,
                           UserRecipeSerializer, UserSubscribeSerializer)
-
-from django.contrib.auth import get_user_model
-from djoser.views import UserViewSet
 
 
 User = get_user_model()
@@ -59,8 +58,8 @@ class UserViewSet(UserViewSet):
             permission_classes=(IsAuthenticated,))
     def set_password(self, request):
         serializer = SetPasswordSerializer(request.user, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response({'detail': 'Пароль успешно изменен!'},
                         status=status.HTTP_204_NO_CONTENT)
 
