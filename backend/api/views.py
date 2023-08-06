@@ -12,14 +12,15 @@ from djoser.views import UserViewSet
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow
-from .filters import RecipeFilter
-from .pagination import CustomPaginator
-from .permissions import AdminOrAuthorPermission
-from .serializers import (CreateRecipeSerializer, IngredientSerializer,
-                          SetPasswordSerializer, ShowRecipeSerializer,
-                          ShowUserSerializer, SignUpSerializer,
-                          SubscribeAuthorSerializer, TagSerializer,
-                          UserRecipeSerializer, UserSubscribeSerializer)
+
+from api.filters import RecipeFilter
+from api.pagination import CustomPaginator
+from api.permissions import AdminOrAuthorPermission
+from api.serializers import (CreateRecipeSerializer, IngredientSerializer,
+                             SetPasswordSerializer, ShowRecipeSerializer,
+                             ShowUserSerializer, SignUpSerializer,
+                             SubscribeAuthorSerializer, TagSerializer,
+                             UserRecipeSerializer, UserSubscribeSerializer)
 
 
 User = get_user_model()

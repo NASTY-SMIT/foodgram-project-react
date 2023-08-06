@@ -11,11 +11,10 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from recipes.models import (
     Recipe, Ingredient, Tag,
     IngredientRecipe, Favorite,
-    ShoppingCart
-)
+    ShoppingCart)
 from users.models import Follow
-from .mixins import UsernameValidationMixin
-from .constants import MAX_LENGTH_EMAIL, MAX_LENGTH_USERNAME
+from api.mixins import UsernameValidationMixin
+from api.constants import MAX_LENGTH_EMAIL, MAX_LENGTH_USERNAME
 
 
 User = get_user_model()
