@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.conf import settings
 
-from api.constants import COLORS, MAX_LENGTH_NAME, MAX_LENGTH_COLOR
+from api.constants import MAX_LENGTH_NAME, MAX_LENGTH_COLOR
 
 
 User = get_user_model()
@@ -16,10 +15,8 @@ class Tag(models.Model):
         verbose_name='Название тега',
     )
     color = models.CharField(
+        verbose_name='Цвет тега',
         max_length=MAX_LENGTH_COLOR,
-        choices=COLORS,
-        unique=True,
-        verbose_name='Цвет',
     )
     slug = models.SlugField(
         max_length=MAX_LENGTH_NAME,
@@ -63,7 +60,6 @@ class Recipe(models.Model):
         verbose_name='Название')
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to=settings.IMAGE_UPLOAD_PATH,
     )
     text = models.TextField(verbose_name='Описание')
     ingredients = models.ManyToManyField(
@@ -114,12 +110,12 @@ class IngredientRecipe(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиенты в рецепте',
-        related_name='ingredients',
+        related_name='ingredientsRecipes',
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name='Рецепт с ингридиентами',
-        related_name='recipes',
+        related_name='ingredientsRecipes',
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество ингредиентов',
