@@ -26,6 +26,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'author', 'name', 'cooking_time', 'text', 'image')
     list_filter = ('tags',)
     empty_value_display = '-пусто-'
+    search_fields = ('name', 'author')
 
     def get_ingredients(self, obj):
         return ", ".join(
