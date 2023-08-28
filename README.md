@@ -27,6 +27,9 @@
 - Django REST framework 3.14
 - Docker
 
+## Главная страница проекта
+![Image alt](https://github.com/NASTY-SMIT/foodgram-project-react/raw/master/photo1693209639.jpeg)
+
 ## Как развернуть проект
 
 Клонировать репозиторий и перейти в него в командной строке:
